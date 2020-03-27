@@ -16,6 +16,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var poemsRouter = require('./routes/poems');
 var quotesRouter = require('./routes/quotes');
+var wordsRouter = require('./routes/words');
 
 InitiateMongoServer();
 
@@ -45,6 +46,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/poems', poemsRouter);
 app.use('/quotes', quotesRouter);
+app.use('/words', wordsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
