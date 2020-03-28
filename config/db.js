@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-// Replace this with your MONGOURI.
-const MONGOURI = "mongodb+srv://baduy:naman@sy32520-d6nli.mongodb.net/test?retryWrites=true&w=majority";
+import MONGOURI from "./config.js";
 
 const InitiateMongoServer = async () => {
   try {
