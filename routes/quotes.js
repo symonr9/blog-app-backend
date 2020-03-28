@@ -3,129 +3,53 @@ const { check, validationResult } = require("express-validator/check");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
+const { generateCombination } = require("gfycat-style-urls");
+
 var router = express.Router();
 
 const Quote = require("../model/Quote");
 
-
+//Get all quotes
 router.get("/", async (req, res) => {
-  try {
-    // request.user is getting fetched from Middleware after token authentication
-    const quotes = await Quote.find();
-    res.json(quotes);
-  } catch (e) {
-    res.send({ message: "Error in Fetching quotes" });
-  }
+  Quote.find()
+    .then(quotes => {
+      res.status(200).json(quotes);
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
 });
 
-router.get("/:id", async (req, res) => {
-  try {
-    let { id } = req.params || {};
-    id = parseInt(id);
-    const validParam = id && typeof id === 'number';
-
-    if (validParam) {
-      // request.user is getting fetched from Middleware after token authentication
-      const quote = await Quote.findById(id);
-      res.json(quote);
-    }
-  
-  } catch (e) {
-    res.send({ message: "Error in Fetching quote" });
-  }
+router.get("/:id", (req, res, next) => {
+  Quote.findOne({
+    _id: req.params.id
+  })
+    .then(quote => {
+      res.status(200).json(quote);
+    })
+    .catch(error => {
+      res.status(404).json({
+        error: error
+      });
+    });
 });
 
-
 router.post(
-  //Route
   "/create",
-  //Validation
-  [
-  ],
-  //Request, reponse
-  async (req, res) => {
-
-
-    //Retrieve parameters from body (assumes application/json)
-    const { text, author } = req.body;
-
-
-    try {
-      //Look for the user where the email matches
-      let quote = await Quote.findOne({
-        text
-      });
-      if (quote) {
-        return res.status(400).json({
-          msg: "User Already Exists"
-        });
-      }
-
-      const isPublic = true;
-      const dateGiven = '12/22/1990';
-      const createdBy = 'syborg9';
-      //Create new user model with passed information
-      quote = new Quote({
-        text,
-        author,
-        isPublic,
-        dateGiven,
-        createdBy
-      });
-
-      //Encrypt password
-      const salt = await bcrypt.genSalt(10);
-      quote.text = await bcrypt.hash(text, salt);
-
-      //Save user
-      await quote.save();
-
-      const payload = {
-        quote: {
-          id: quote.id
-        }
-      };
-
-      //Return a token
-      jwt.sign(
-        payload,
-        "randomString",
-        {
-          expiresIn: 10000
-        },
-        (err, token) => {
-          if (err) throw err;
-          res.status(200).json({
-            token
-          });
-        }
-      );
-    } catch (err) {
-      console.log(err.message);
-      res.status(500).send("Error in Creating Quote");
-    }
-  }
-);
-
-/*
-router.post(
-  //Route
-  "/create",
-  //Validation
   [
     check("text", "Please Enter a Valid Text")
       .not()
       .isEmpty(),
-      check("author", "Please Enter a Valid Author")
+    check("author", "Please Enter a Valid Author")
       .not()
       .isEmpty(),
-      check("createdBy", "Please Enter a Valid createdBy")
+    check("createdBy", "Please Enter a Valid createdBy")
       .not()
-      .isEmpty(),
+      .isEmpty()
   ],
-  //Request, reponse
   async (req, res) => {
-
     //Check for errors based on what was passed in
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -135,134 +59,81 @@ router.post(
     }
 
     //Retrieve parameters from body (assumes application/json)
-    const { text, author, isPublic, dateGiven, createdBy } = req.body;
+    const { text, author, isPublic, dateGiven } = req.body;
+    const urlId = `${generateCombination(2, "-")}`.toLowerCase();
 
-    try {
+    //Fixme: pull createdBy from active user
+    const createdBy = "admin";
 
-      //Create new quote model with passed information
-      let quote = new Quote({
-        text,
-        author,
-        isPublic,
-        dateGiven,
-        createdBy
+    let quote = new Quote({
+      urlId,
+      text,
+      author,
+      isPublic,
+      dateGiven,
+      createdBy
+    });
+
+    quote
+      .save()
+      .then(
+        res.status(200).json({
+          quote
+        })
+      )
+      .catch(error => {
+        res.status(400).json({
+          error: error
+        });
       });
-
-      //Save quote
-      await quote.save();
-
-      res.status(200).json({
-        quote
-      });
-      
-    } catch (err) {
-      console.log(err.message);
-      res.status(500).send("Error in Saving");
-    }
   }
 );
-*/
+
+
+router.put("/edit/:id", (req, res, next) => {
+
+  //Retrieve parameters from body (assumes application/json)
+  const { text, author, isPublic, dateGiven, urlId } = req.body;
+
+  //Fixme: pull createdBy from active user
+  const createdBy = "admin";
+  const _id = req.params.id;
+
+  const quote = new Quote({
+    _id,
+    urlId,
+    text,
+    author,
+    isPublic,
+    dateGiven,
+    createdBy
+  });
+
+  Quote.updateOne({ _id: req.params.id }, quote)
+    .then(() => {
+      res.status(201).json({
+        message: "Quote updated successfully!"
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+router.delete("/delete/:id", (req, res, next) => {
+  Quote.deleteOne({ _id: req.params.id })
+    .then(() => {
+      res.status(200).json({
+        message: "Deleted!"
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
 
 module.exports = router;
-
-
-
-/*
-
-app.post('/api/stuff', (req, res, next) => {
-  const thing = new Thing({
-    title: req.body.title,
-    description: req.body.description,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    userId: req.body.userId
-  });
-  thing.save().then(
-    () => {
-      res.status(201).json({
-        message: 'Post saved successfully!'
-      });
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
-});
-
-app.use('/api/stuff', (req, res, next) => {
-  Thing.find().then(
-    (things) => {
-      res.status(200).json(things);
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
-});
-
-
-app.get('/api/stuff/:id', (req, res, next) => {
-  Thing.findOne({
-    _id: req.params.id
-  }).then(
-    (thing) => {
-      res.status(200).json(thing);
-    }
-  ).catch(
-    (error) => {
-      res.status(404).json({
-        error: error
-      });
-    }
-  );
-});
-
-
-
-app.put('/api/stuff/:id', (req, res, next) => {
-  const thing = new Thing({
-    _id: req.params.id,
-    title: req.body.title,
-    description: req.body.description,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    userId: req.body.userId
-  });
-  Thing.updateOne({_id: req.params.id}, thing).then(
-    () => {
-      res.status(201).json({
-        message: 'Thing updated successfully!'
-      });
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
-});
-
-
-app.delete('/api/stuff/:id', (req, res, next) => {
-  Thing.deleteOne({_id: req.params.id}).then(
-    () => {
-      res.status(200).json({
-        message: 'Deleted!'
-      });
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
-});
-*/

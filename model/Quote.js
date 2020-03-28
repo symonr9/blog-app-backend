@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 //Has "_id" default primary key property
 const QuoteSchema = mongoose.Schema({
+  urlId: {
+    type: String,
+    required: true
+  },
   text: {
     type: String,
     required: true
