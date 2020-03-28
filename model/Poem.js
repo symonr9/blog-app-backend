@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 //Has "_id" default primary key property
 const PoemSchema = mongoose.Schema({
+  urlId: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: true
