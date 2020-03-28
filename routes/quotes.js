@@ -41,9 +41,6 @@ router.post(
       .isEmpty(),
     check("author", "Please Enter a Valid Author")
       .not()
-      .isEmpty(),
-    check("createdBy", "Please Enter a Valid createdBy")
-      .not()
       .isEmpty()
   ],
   async (req, res) => {
@@ -90,7 +87,10 @@ router.post(
 router.put("/edit/:id", (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
-  const { text, author, isPublic, dateGiven, urlId } = req.body;
+  const { text, author, isPublic, dateGiven } = req.body;
+
+  //pull urlId from actual thing
+  const urlId = "temp url id";
 
   //Fixme: pull createdBy from active user
   const createdBy = "admin";

@@ -36,13 +36,10 @@ router.get("/:id", (req, res, next) => {
 router.post(
   "/create",
   [
-    check("text", "Please Enter a Valid Text")
+    check("title", "Please Enter a Valid Title")
       .not()
       .isEmpty(),
-    check("author", "Please Enter a Valid Author")
-      .not()
-      .isEmpty(),
-    check("createdBy", "Please Enter a Valid createdBy")
+    check("body", "Please Enter a Valid Body")
       .not()
       .isEmpty()
   ],
@@ -91,7 +88,10 @@ router.post(
 router.put("/edit/:id", (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
-  const { text, author, isPublic, dateGiven, urlId } = req.body;
+  const { title, body, notes, type, isPublic } = req.body;
+
+  //pull urlId from actual thing
+  const urlId = "temp actual thing";
 
   //Fixme: pull createdBy from active user
   const createdBy = "admin";
