@@ -1,8 +1,5 @@
 var express = require("express");
 const { check, validationResult } = require("express-validator/check");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const auth = require("../middleware/auth");
 const { generateCombination } = require("gfycat-style-urls");
 
 var router = express.Router();
