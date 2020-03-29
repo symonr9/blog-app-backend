@@ -16,12 +16,10 @@ const SCOPES = ["https://www.googleapis.com/auth/drive"];
 // time.
 const TOKEN_PATH = "token.json";
 
-const CREDENTIALS_PATH = "../config/googleDriveCredentials.json";
-
 //Get all quotes
 router.get("/", async (req, res) => {
   // Load client secrets from a local file.
-  fs.readFile(CREDENTIALS_PATH, (err, content) => {
+  fs.readFile('../config/googleDriveCredentials.json', (err, content) => {
     if (err) {
       return console.log("Error loading client secret file:", err);
     }
