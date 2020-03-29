@@ -1,5 +1,5 @@
 var express = require("express");
-const { check, validationResult } = require("express-validator/check");
+const { check, validationResult } = require("express-validator");
 const { generateCombination } = require("gfycat-style-urls");
 
 var router = express.Router();
