@@ -1,15 +1,26 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var session = require('express-session');
+var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("cors");
+
+const InitiateMongoServer = require("./config/db");
 
 /*
  * ADD NEW ROUTERS HERE
  */
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var poemsRouter = require('./routes/poems');
+var proseRouter = require('./routes/prose');
+var quotesRouter = require('./routes/quotes');
+var wordsRouter = require('./routes/words');
+var googleRouter = require('./routes/google');
+
+InitiateMongoServer();
 
 var app = express();
 
@@ -17,18 +28,29 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
+
+app.use(bodyParser.json());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({ secret: 'myBlog', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
+
 
 /*
  * ADD NEW ROUTERS HERE
  */
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/poems', poemsRouter);
+app.use('/prose', proseRouter);
+app.use('/quotes', quotesRouter);
+app.use('/words', wordsRouter);
+app.use('/google', googleRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
