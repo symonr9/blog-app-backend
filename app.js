@@ -15,6 +15,7 @@ const InitiateMongoServer = require("./config/db");
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var poemsRouter = require('./routes/poems');
+var proseRouter = require('./routes/prose');
 var quotesRouter = require('./routes/quotes');
 var wordsRouter = require('./routes/words');
 
@@ -45,6 +46,7 @@ app.use(session({ secret: 'myBlog', cookie: { maxAge: 60000 }, resave: false, sa
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/poems', poemsRouter);
+app.use('/prose', proseRouter);
 app.use('/quotes', quotesRouter);
 app.use('/words', wordsRouter);
 
