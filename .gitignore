@@ -5,8 +5,8 @@
 /.pnp
 .pnp.js
 .env
-config/config.js
-config/db.js
+config/
+routes/token.json
 
 # testing
 /coverage
