@@ -85,17 +85,29 @@ router.post(
 );
 
 
-router.put("/edit/:id", (req, res, next) => {
+router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
   const { title, body, notes, type, isPublic } = req.body;
+  const _id = req.params.id;
 
-  //pull urlId from actual thing
-  const urlId = "temp actual thing";
+  let urlId = "";
+  try{
+    let existingPoem = await Poem.findOne({
+      _id
+    });
+
+    urlId = existingPoem.urlId;
+  }
+  catch (e) {
+    console.error(e);
+    res.status(500).json({
+      message: "Server Error"
+    });
+  }
 
   //Fixme: pull createdBy from active user
   const createdBy = "admin";
-  const _id = req.params.id;
 
   const poem = new Poem({
     _id,

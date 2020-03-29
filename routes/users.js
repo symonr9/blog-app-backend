@@ -12,10 +12,7 @@ router.get("/", function(req, res, next) {
   res.json({ message: "API for user Working" });
 });
 
-router.post(
-  //Route
-  "/signup",
-  //Validation
+router.post("/signup",
   [
     check("username", "Please Enter a Valid Username")
       .not()
@@ -38,7 +35,6 @@ router.post(
 
     //Retrieve parameters from body (assumes application/json)
     const { username, email, password } = req.body;
-
 
     try {
       //Look for the user where the email matches
@@ -92,8 +88,7 @@ router.post(
   }
 );
 
-router.post(
-  "/login",
+router.post("/login",
   [
     check("email", "Please enter a valid email").isEmail(),
     check("password", "Please enter a valid password").isLength({
@@ -152,7 +147,6 @@ router.post(
     }
   }
 );
-
 
 //Get logged in user info
 router.get("/info", auth, async (req, res) => {

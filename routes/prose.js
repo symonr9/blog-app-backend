@@ -83,17 +83,29 @@ router.post(
 );
 
 
-router.put("/edit/:id", (req, res, next) => {
+router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
   const { title, body, isPublic } = req.body;
+  const _id = req.params.id;
 
-  //pull urlId from actual thing
-  const urlId = "temp actual thing";
+  let urlId = "";
+  try{
+    let existingProse = await Prose.findOne({
+      _id
+    });
+
+    urlId = existingProse.urlId;
+  }
+  catch (e) {
+    console.error(e);
+    res.status(500).json({
+      message: "Server Error"
+    });
+  }
 
   //Fixme: pull createdBy from active user
   const createdBy = "admin";
-  const _id = req.params.id;
 
   const prose = new Prose({
     _id,
@@ -116,12 +128,12 @@ router.put("/edit/:id", (req, res, next) => {
       });
     });
 });
-
+ 
 router.delete("/delete/:id", (req, res, next) => {
   Prose.deleteOne({ _id: req.params.id })
     .then(() => {
       res.status(200).json({
-        message: "Deleted!"
+        message: "Successfully deleted prose!"
       });
     })
     .catch(error => {

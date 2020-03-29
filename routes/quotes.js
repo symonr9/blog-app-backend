@@ -84,17 +84,29 @@ router.post(
 );
 
 
-router.put("/edit/:id", (req, res, next) => {
+router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
   const { text, author, isPublic, dateGiven } = req.body;
+  const _id = req.params.id;
 
-  //pull urlId from actual thing
-  const urlId = "temp url id";
+  let urlId = "";
+  try{
+    let existingQuote = await Quote.findOne({
+      _id
+    });
+
+    urlId = existingQuote.urlId;
+  }
+  catch (e) {
+    console.error(e);
+    res.status(500).json({
+      message: "Server Error"
+    });
+  }
 
   //Fixme: pull createdBy from active user
   const createdBy = "admin";
-  const _id = req.params.id;
 
   const quote = new Quote({
     _id,
