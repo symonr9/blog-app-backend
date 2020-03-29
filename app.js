@@ -18,6 +18,7 @@ var poemsRouter = require('./routes/poems');
 var proseRouter = require('./routes/prose');
 var quotesRouter = require('./routes/quotes');
 var wordsRouter = require('./routes/words');
+var googleRouter = require('./routes/google');
 
 InitiateMongoServer();
 
@@ -49,6 +50,7 @@ app.use('/poems', poemsRouter);
 app.use('/prose', proseRouter);
 app.use('/quotes', quotesRouter);
 app.use('/words', wordsRouter);
+app.use('/google', googleRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
