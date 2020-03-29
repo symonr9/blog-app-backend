@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+const MONGOURI = process.env.MONGOURI;
 
 const InitiateMongoServer = async () => {
   try {
