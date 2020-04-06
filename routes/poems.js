@@ -19,9 +19,9 @@ router.get("/", async (req, res) => {
     });
 });
 
-router.get("/:id", (req, res, next) => {
+router.get("/:urlId", (req, res, next) => {
   Poem.findOne({
-    _id: req.params.id
+    urlId: req.params.urlId
   })
     .then(poem => {
       res.status(200).json(poem);
