@@ -87,7 +87,8 @@ router.post(
 router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
-  const { text, author, isPublic, dateGiven } = req.body;
+  const { text, author, isPublic } = req.body;
+  //Fixme: Add dateGiven at some point
   const _id = req.params.id;
 
   let urlId = "";
@@ -114,7 +115,7 @@ router.put("/edit/:id", async (req, res, next) => {
     text,
     author,
     isPublic,
-    dateGiven,
+    //date given would be added here
     createdBy
   });
 
