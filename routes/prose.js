@@ -87,6 +87,10 @@ router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
   const { title, body, isPublic } = req.body;
+  console.log("Inside Prose");
+  console.log("title: ", title);
+  console.log("body: ", body);
+  console.log("isPublic: ", isPublic);
   const _id = req.params.id;
 
   let urlId = "";
