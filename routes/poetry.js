@@ -6,11 +6,11 @@ var router = express.Router();
 
 const Poem = require("../model/Poem");
 
-//Get all poems
+//Get all poetry
 router.get("/", async (req, res) => {
   Poem.find()
-    .then(poems => {
-      res.status(200).json(poems);
+    .then(poetry => {
+      res.status(200).json(poetry);
     })
     .catch(error => {
       res.status(400).json({
