@@ -1,3 +1,9 @@
+/***********************************************************************
+ * File Name: quotes.js
+ * Description: Implements the quotes router.
+ * Author: Symon Ramos symonr12@gmail.com
+ **********************************************************************/
+
 var express = require("express");
 const { check, validationResult } = require("express-validator");
 const { generateCombination } = require("gfycat-style-urls");
@@ -6,7 +12,11 @@ var router = express.Router();
 
 const Quote = require("../model/Quote");
 
-//Get all quotes
+
+/**********************************************************************
+ * URI: Get All Quotes
+ * Notes: None
+ **********************************************************************/
 router.get("/", async (req, res) => {
   Quote.find()
     .then(quotes => {
@@ -19,6 +29,10 @@ router.get("/", async (req, res) => {
     });
 });
 
+/**********************************************************************
+ * URI: Get Quote by urlId
+ * Notes: None
+ **********************************************************************/
 router.get("/:urlId", (req, res, next) => {
   Quote.findOne({
     urlId: req.params.urlId
@@ -33,9 +47,14 @@ router.get("/:urlId", (req, res, next) => {
     });
 });
 
+/**********************************************************************
+ * URI: Create Quote
+ * Notes: None
+ **********************************************************************/
 router.post(
   "/create",
   [
+    //Validates input.
     check("text", "Please Enter a Valid Text")
       .not()
       .isEmpty(),
@@ -84,6 +103,11 @@ router.post(
 );
 
 
+/**********************************************************************
+ * URI: Edit Quote
+ * Notes: Expects _id, not urlId. Because it is being called on an
+ * existing item, _id is used instead of urlId because it is known.
+ **********************************************************************/
 router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
@@ -132,6 +156,11 @@ router.put("/edit/:id", async (req, res, next) => {
     });
 });
 
+/**********************************************************************
+ * URI: Delete Quote
+ * Notes: Expects _id, not urlId. Because it is being called on an
+ * existing item, _id is used instead of urlId because it is known.
+ **********************************************************************/
 router.delete("/delete/:id", (req, res, next) => {
   Quote.deleteOne({ _id: req.params.id })
     .then(() => {

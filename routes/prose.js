@@ -1,3 +1,9 @@
+/***********************************************************************
+ * File Name: prose.js
+ * Description: Implements the prose router.
+ * Author: Symon Ramos symonr12@gmail.com
+ **********************************************************************/
+
 var express = require("express");
 const { check, validationResult } = require("express-validator");
 const { generateCombination } = require("gfycat-style-urls");
@@ -6,7 +12,11 @@ var router = express.Router();
 
 const Prose = require("../model/Prose");
 
-//Get all prose
+
+/**********************************************************************
+ * URI: Get All Prose
+ * Notes: None
+ **********************************************************************/
 router.get("/", async (req, res) => {
   Prose.find()
     .then(prose => {
@@ -19,6 +29,11 @@ router.get("/", async (req, res) => {
     });
 });
 
+
+/**********************************************************************
+ * URI: Get Prose by urlId.
+ * Notes: None
+ **********************************************************************/
 router.get("/:urlId", (req, res, next) => {
   Prose.findOne({
     urlId: req.params.urlId
@@ -33,9 +48,15 @@ router.get("/:urlId", (req, res, next) => {
     });
 });
 
+
+/**********************************************************************
+ * URI: Create Prose
+ * Notes: None
+ **********************************************************************/
 router.post(
   "/create",
   [
+    //Validates input
     check("title", "Please Enter a Valid Title")
       .not()
       .isEmpty(),
@@ -83,14 +104,15 @@ router.post(
 );
 
 
+/**********************************************************************
+ * URI: Edit Prose
+ * Notes: Expects _id, not urlId. Because it is being called on an
+ * existing item, _id is used instead of urlId because it is known.
+ **********************************************************************/
 router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
   const { title, body, isPublic } = req.body;
-  console.log("Inside Prose");
-  console.log("title: ", title);
-  console.log("body: ", body);
-  console.log("isPublic: ", isPublic);
   const _id = req.params.id;
 
   let urlId = "";
@@ -133,6 +155,12 @@ router.put("/edit/:id", async (req, res, next) => {
     });
 });
  
+
+/**********************************************************************
+ * URI: Delete Prose
+ * Notes: Expects _id, not urlId. Because it is being called on an
+ * existing item, _id is used instead of urlId because it is known.
+ **********************************************************************/
 router.delete("/delete/:id", (req, res, next) => {
   Prose.deleteOne({ _id: req.params.id })
     .then(() => {
