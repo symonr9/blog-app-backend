@@ -1,3 +1,10 @@
+/***********************************************************************
+ * File Name: users.js
+ * Description: Implements the users router.
+ * Author: Symon Ramos symonr12@gmail.com
+ **********************************************************************/
+
+
 var express = require("express");
 const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");

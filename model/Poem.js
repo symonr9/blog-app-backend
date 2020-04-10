@@ -1,3 +1,4 @@
+
 const mongoose = require("mongoose");
 
 //Has "_id" default primary key property

@@ -1,3 +1,9 @@
+/***********************************************************************
+ * File Name: app.js
+ * Description: This file starts and executes the server and its details.
+ * Author: Symon Ramos symonr12@gmail.com
+ **********************************************************************/
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -9,9 +15,7 @@ var cors = require("cors");
 
 const InitiateMongoServer = require("./config/db");
 
-/*
- * ADD NEW ROUTERS HERE
- */
+//Routers, which will define URI endpoints.
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var poetryRouter = require('./routes/poetry');
@@ -28,7 +32,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-
+//cors() is needed in order to fix the Access-Control-Allow-Origin
+//missing error. 
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
@@ -41,9 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'myBlog', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
 
 
-/*
- * ADD NEW ROUTERS HERE
- */
+//Define URI endpoints here.
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/poetry', poetryRouter);

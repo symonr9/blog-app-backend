@@ -1,3 +1,9 @@
+/***********************************************************************
+ * File Name: poetry.js
+ * Description: Implements the poetry router.
+ * Author: Symon Ramos symonr12@gmail.com
+ **********************************************************************/
+
 var express = require("express");
 const { check, validationResult } = require("express-validator");
 const { generateCombination } = require("gfycat-style-urls");
@@ -6,7 +12,10 @@ var router = express.Router();
 
 const Poem = require("../model/Poem");
 
-//Get all poetry
+/**********************************************************************
+ * URI: Get All Poetry
+ * Notes: None
+ **********************************************************************/
 router.get("/", async (req, res) => {
   Poem.find()
     .then(poetry => {
@@ -19,6 +28,10 @@ router.get("/", async (req, res) => {
     });
 });
 
+/**********************************************************************
+ * URI: Get Poetry by urlId.
+ * Notes: None
+ **********************************************************************/
 router.get("/:urlId", (req, res, next) => {
   Poem.findOne({
     urlId: req.params.urlId
@@ -33,9 +46,14 @@ router.get("/:urlId", (req, res, next) => {
     });
 });
 
+/**********************************************************************
+ * URI: Create Poetry
+ * Notes: None
+ **********************************************************************/
 router.post(
   "/create",
   [
+    //Validates input.
     check("title", "Please Enter a Valid Title")
       .not()
       .isEmpty(),
@@ -54,6 +72,7 @@ router.post(
 
     //Retrieve parameters from body (assumes application/json)
     const { title, body, notes, type, isPublic } = req.body;
+    //Use NPM library to generate random urlId.
     const urlId = `${generateCombination(2, "-")}`.toLowerCase();
 
     //Fixme: pull createdBy from active user
@@ -84,7 +103,11 @@ router.post(
   }
 );
 
-
+/**********************************************************************
+ * URI: Edit Poetry
+ * Notes: Expects _id, not urlId. Because it is being called on an
+ * existing item, _id is used instead of urlId because it is known.
+ **********************************************************************/
 router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
@@ -133,6 +156,11 @@ router.put("/edit/:id", async (req, res, next) => {
     });
 });
 
+/**********************************************************************
+ * URI: Delete Poetry
+ * Notes: Expects _id, not urlId. Because it is being called on an
+ * existing item, _id is used instead of urlId because it is known.
+ **********************************************************************/
 router.delete("/delete/:id", (req, res, next) => {
   Poem.deleteOne({ _id: req.params.id })
     .then(() => {

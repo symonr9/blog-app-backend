@@ -1,3 +1,9 @@
+/***********************************************************************
+ * File Name: index.js
+ * Description: Implements the home directory router.
+ * Author: Symon Ramos symonr12@gmail.com
+ **********************************************************************/
+
 var express = require('express');
 var router = express.Router();
 
