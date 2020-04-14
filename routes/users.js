@@ -20,26 +20,9 @@ router.get("/", function(req, res, next) {
 });
 
 router.post("/signup",
-  [
-    check("username", "Please Enter a Valid Username")
-      .not()
-      .isEmpty(),
-    check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a valid password").isLength({
-      min: 6
-    })
-  ],
+  [],
   //Request, reponse
   async (req, res) => {
-
-    //Check for errors based on what was passed in
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        errors: errors.array()
-      });
-    }
-
     //Retrieve parameters from body (assumes application/json)
     const { username, email, password } = req.body;
 
@@ -84,7 +67,8 @@ router.post("/signup",
         (err, token) => {
           if (err) throw err;
           res.status(200).json({
-            token
+            token,
+            username
           });
         }
       );
@@ -96,36 +80,28 @@ router.post("/signup",
 );
 
 router.post("/login",
-  [
-    check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a valid password").isLength({
-      min: 6
-    })
-  ],
+  [],
   async (req, res) => {
-    const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        errors: errors.array()
-      });
-    }
-
-    const { email, password } = req.body;
+    const { username, password } = req.body;
     try {
       let user = await User.findOne({
-        email
+        username
       });
-      if (!user)
+
+      if (!user){
         return res.status(400).json({
           message: "User Not Exist"
         });
+      }
 
       const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch)
+
+      if (!isMatch){
         return res.status(400).json({
           message: "Incorrect Password !"
         });
+      }
 
       const payload = {
         user: {
@@ -142,7 +118,8 @@ router.post("/login",
         (err, token) => {
           if (err) throw err;
           res.status(200).json({
-            token
+            token,
+            username
           });
         }
       );
