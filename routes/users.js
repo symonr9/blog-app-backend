@@ -29,11 +29,11 @@ router.post("/signup",
     try {
       //Look for the user where the email matches
       let user = await User.findOne({
-        email
+        username
       });
       if (user) {
         return res.status(400).json({
-          msg: "User Already Exists"
+          message: "User Already Exists"
         });
       }
 

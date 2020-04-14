@@ -74,11 +74,8 @@ router.post(
     }
 
     //Retrieve parameters from body (assumes application/json)
-    const { title, body, isPublic } = req.body;
+    const { title, body, isPublic, createdBy } = req.body;
     const urlId = `${generateCombination(2, "-")}`.toLowerCase();
-
-    //Fixme: pull createdBy from active user
-    const createdBy = "admin";
 
     let prose = new Prose({
       urlId,
@@ -112,7 +109,7 @@ router.post(
 router.put("/edit/:id", async (req, res, next) => {
 
   //Retrieve parameters from body (assumes application/json)
-  const { title, body, isPublic } = req.body;
+  const { title, body, isPublic, createdBy } = req.body;
   const _id = req.params.id;
 
   let urlId = "";
@@ -129,9 +126,6 @@ router.put("/edit/:id", async (req, res, next) => {
       message: "Server Error"
     });
   }
-
-  //Fixme: pull createdBy from active user
-  const createdBy = "admin";
 
   const prose = new Prose({
     _id,
