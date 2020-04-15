@@ -29,6 +29,24 @@ router.get("/", async (req, res) => {
     });
 });
 
+/**********************************************************************
+ * URI: Get Prose by User
+ * Notes: None
+ **********************************************************************/
+router.get("/user/:username", async (req, res) => {
+  Prose.find({
+    createdBy: req.params.username
+  })
+    .then(prose => {
+      res.status(200).json(prose);
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
 
 /**********************************************************************
  * URI: Get Prose by urlId.

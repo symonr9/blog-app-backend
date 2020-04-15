@@ -29,6 +29,24 @@ router.get("/", async (req, res) => {
 });
 
 /**********************************************************************
+ * URI: Get Poetry by User
+ * Notes: None
+ **********************************************************************/
+router.get("/user/:username", async (req, res) => {
+  Poem.find({
+    createdBy: req.params.username
+  })
+    .then(poetry => {
+      res.status(200).json(poetry);
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+/**********************************************************************
  * URI: Get Poetry by urlId.
  * Notes: None
  **********************************************************************/
