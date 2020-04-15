@@ -72,11 +72,8 @@ router.post(
     }
 
     //Retrieve parameters from body (assumes application/json)
-    const { text, author, isPublic, dateGiven } = req.body;
+    const { text, author, isPublic, dateGiven, createdBy } = req.body;
     const urlId = `${generateCombination(2, "-")}`.toLowerCase();
-
-    //Fixme: pull createdBy from active user
-    const createdBy = "admin";
 
     let quote = new Quote({
       urlId,
