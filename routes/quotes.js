@@ -30,6 +30,24 @@ router.get("/", async (req, res) => {
 });
 
 /**********************************************************************
+ * URI: Get Quote by User
+ * Notes: None
+ **********************************************************************/
+router.get("/user/:username", async (req, res) => {
+  Quote.find({
+    createdBy: req.params.username
+  })
+    .then(quotes => {
+      res.status(200).json(quotes);
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+/**********************************************************************
  * URI: Get Quote by urlId
  * Notes: None
  **********************************************************************/
