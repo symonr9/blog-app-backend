@@ -70,11 +70,14 @@ router.put("/edit/:id", async (req, res, next) => {
     });
   }
 
+  const salt = await bcrypt.genSalt(10);
+  const newPass = await bcrypt.hash(password, salt);
+
   const user = new User({
     _id,
     username, 
     email, 
-    password, 
+    newPass, 
     bio, 
     colorPrefs, 
     fontPrefs
