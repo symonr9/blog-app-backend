@@ -6,7 +6,6 @@
 
 
 var express = require("express");
-const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
@@ -14,11 +13,111 @@ var router = express.Router();
 
 const User = require("../model/User");
 
-/* GET users listing. */
-router.get("/", function(req, res, next) {
-  res.json({ message: "API for user Working" });
+/**********************************************************************
+ * URI: Get All Users
+ * Notes: None
+ **********************************************************************/
+router.get("/", async (req, res) => {
+  User.find()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
 });
 
+/**********************************************************************
+ * URI: Get User Info by username
+ * Notes: None
+ **********************************************************************/
+router.get("/:username", async (req, res) => {
+  User.find({
+    username: req.params.username
+  })
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+
+/**********************************************************************
+ * URI: Edit User
+ * Notes: Expects _id, not urlId. Because it is being called on an
+ * existing item, _id is used instead of urlId because it is known.
+ **********************************************************************/
+router.put("/edit/:id", async (req, res, next) => {
+  //Retrieve parameters from body (assumes application/json)
+  const { username, email, password, bio, colorPrefs, fontPrefs } = req.body;
+  const _id = req.params.id;
+
+  try{
+    let existingUser = await User.findOne({
+      _id
+    });
+  }
+  catch (e) {
+    console.error(e);
+    res.status(500).json({
+      message: "Server Error"
+    });
+  }
+
+  const user = new User({
+    _id,
+    username, 
+    email, 
+    password, 
+    bio, 
+    colorPrefs, 
+    fontPrefs
+  });
+
+  User.updateOne({ _id: req.params.id }, user)
+    .then(() => {
+      res.status(201).json({
+        message: "User updated successfully!"
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+
+/**********************************************************************
+ * URI: Delete User
+ * Notes: Expects _id, not urlId. Because it is being called on an
+ * existing item, _id is used instead of urlId because it is known.
+ **********************************************************************/
+router.delete("/delete/:id", (req, res, next) => {
+  User.deleteOne({ _id: req.params.id })
+    .then(() => {
+      res.status(200).json({
+        message: "Deleted!"
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error
+      });
+    });
+});
+
+
+/**********************************************************************
+ * URI: Signup
+ * Notes: Creates user.
+ **********************************************************************/
 router.post("/signup",
   [],
   //Request, reponse
@@ -79,6 +178,11 @@ router.post("/signup",
   }
 );
 
+
+/**********************************************************************
+ * URI: Login
+ * Notes: Logs user in, sets a user token.
+ **********************************************************************/
 router.post("/login",
   [],
   async (req, res) => {
@@ -131,16 +235,5 @@ router.post("/login",
     }
   }
 );
-
-//Get logged in user info
-router.get("/info", auth, async (req, res) => {
-  try {
-    // request.user is getting fetched from Middleware after token authentication
-    const user = await User.findById(req.user.id);
-    res.json(user);
-  } catch (e) {
-    res.send({ message: "Error in Fetching user" });
-  }
-});
 
 module.exports = router;
