@@ -22,7 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.6",
     "morgan": "~1.9.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.1.1",
     "powerthesaurus-api": "^2.0.1"
   }
 }
